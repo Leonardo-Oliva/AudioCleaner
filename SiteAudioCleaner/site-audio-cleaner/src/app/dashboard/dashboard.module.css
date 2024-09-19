@@ -1,0 +1,38 @@
+/* app/dashboard/dashboard.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f4f8; /* Cor de fundo suave */
+  font-family: Arial, sans-serif; /* Fonte mais limpa */
+}
+
+.title {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.welcome {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.logoutButton {
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: white;
+  background-color: #0070f3; /* Cor do botão */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.logoutButton:hover {
+  background-color: #005bb5; /* Cor do botão ao passar o mouse */
+}
