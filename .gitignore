@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+#firebase config
+audiocleaner-5dcff-firebase-adminsdk-z67xv-caf9c8b4d9.json
+
 # Packages
 *.egg
 *.egg-info/

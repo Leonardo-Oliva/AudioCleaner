@@ -1,10 +1,17 @@
 import os
 import numpy as np
-from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from pedalboard.io import AudioFile
 from pedalboard import *
 import noisereduce as nr
+import firebase_admin
+from firebase_admin import credentials, storage
+
+# Configuração do Firebase
+cred = credentials.Certificate('firebase\\audiocleaner-5dcff-firebase-adminsdk-z67xv-caf9c8b4d9.json')
+firebase_admin.initialize_app(cred, {
+    'storageBucket': 'audiocleaner-5dcff.appspot.com'  # Substitua pelo nome do seu bucket
+})
 
 # Definir a taxa de amostragem (sample rate)
 sr = 44100
@@ -13,7 +20,7 @@ app = FastAPI()
 
 
 @app.post("/process_audio/")
-async def process_audio(file: UploadFile = File(...)):
+async def process_audio(user_id: str, file: UploadFile = File(...)):
     # Salvar o arquivo de áudio enviado
     input_file_path = f'audios/{file.filename}'
     output_file_path = input_file_path.replace('.wav', '_enhanced.wav')
@@ -53,8 +60,19 @@ async def process_audio(file: UploadFile = File(...)):
     with AudioFile(output_file_path, 'w', sr, effected.shape[0]) as f:
         f.write(effected)
 
-    # Retornar o arquivo de áudio processado
-    return FileResponse(output_file_path, media_type='audio/wav')
+    # Enviar o arquivo processado para o Firebase Storage
+    bucket = storage.bucket()
+    blob = bucket.blob(f'{user_id}/{os.path.basename(output_file_path)}')
+
+    try:
+        blob.upload_from_filename(output_file_path)
+        return {"message": "Upload realizado com sucesso!"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao enviar para o Firebase: {str(e)}")
+    finally:
+        # Remover os arquivos locais após o upload (opcional)
+        os.remove(input_file_path)
+        os.remove(output_file_path)
 
 
 if __name__ == "__main__":
