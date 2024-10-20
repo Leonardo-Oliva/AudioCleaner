@@ -1,6 +1,8 @@
 import os
 import numpy as np
 from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pedalboard.io import AudioFile
 from pedalboard import *
 import noisereduce as nr
@@ -18,6 +20,18 @@ sr = 44100
 
 app = FastAPI()
 
+# Adicione as origens permitidas aqui
+origins = [
+    "http://localhost:3000",  # Frontend em execução, ajuste conforme necessário
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/process_audio/")
 async def process_audio(user_id: str, file: UploadFile = File(...)):
@@ -66,7 +80,7 @@ async def process_audio(user_id: str, file: UploadFile = File(...)):
 
     try:
         blob.upload_from_filename(output_file_path)
-        return {"message": "Upload realizado com sucesso!"}
+        return JSONResponse(content={"message": "Áudio processado com sucesso!"})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao enviar para o Firebase: {str(e)}")
     finally:
