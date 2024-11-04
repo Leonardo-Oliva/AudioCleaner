@@ -13,7 +13,7 @@ export default function DownloadPage() {
 
   useEffect(() => {
     const fetchFiles = async (user) => {
-      const folderRef = ref(storage, `uploads/${user.uid}`);
+      const folderRef = ref(storage, `${user.uid}`);
       try {
         const res = await listAll(folderRef);
         const filePromises = res.items.map(async (itemRef) => {

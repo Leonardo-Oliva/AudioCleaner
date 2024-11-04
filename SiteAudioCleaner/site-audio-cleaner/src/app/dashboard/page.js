@@ -1,10 +1,9 @@
-// app/dashboard/page.js
 "use client";
 
 import { useEffect, useState } from "react";
 import { auth } from "../../lib/firebase";
 import { useRouter } from "next/navigation";
-import styles from "./dashboard.module.css"; // Importando o módulo CSS
+import styles from "./dashboard.module.css";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -18,8 +17,7 @@ export default function Dashboard() {
         setUser(user);
       }
     });
-    
-    // Retornando a função de limpeza
+
     return () => unsubscribe();
   }, [router]);
 
@@ -38,6 +36,12 @@ export default function Dashboard() {
       <p className={styles.welcome}>Bem-vindo, {user.email}</p>
       <button className={styles.logoutButton} onClick={handleLogout}>
         Sair
+      </button>
+      <button className={styles.button} onClick={() => router.push("/download")}>
+        Audios Tratados
+      </button>
+      <button className={styles.button} onClick={() => router.push("/upload")}>
+        Ir para Upload
       </button>
     </div>
   );
