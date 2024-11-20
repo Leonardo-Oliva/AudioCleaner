@@ -10,7 +10,7 @@ import firebase_admin
 from firebase_admin import credentials, storage
 
 # Configuração do Firebase
-cred = credentials.Certificate('firebase\\audiocleaner-5dcff-firebase-adminsdk-z67xv-caf9c8b4d9.json')
+cred = credentials.Certificate('firebase\\firebaseconfig.json')
 firebase_admin.initialize_app(cred, {
     'storageBucket': 'audiocleaner-5dcff.appspot.com'  # Substitua pelo nome do seu bucket
 })
