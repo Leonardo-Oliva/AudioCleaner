@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 #firebase config
-firebaseconfig.json
+AudioCleaner\firebase\firebaseconfig.json
 
 # Packages
 *.egg
