@@ -8,6 +8,7 @@ __pycache__/
 
 #firebase config
 AudioCleaner\firebase\firebaseconfig.json
+firebaseconfig.json
 
 # Packages
 *.egg
