@@ -10,6 +10,7 @@ import "./upload.css";
 export default function UploadPage() {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false); // Estado para controle do carregamento
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -18,6 +19,11 @@ export default function UploadPage() {
   const handleUpload = async () => {
     if (!file) {
       setMessage("Por favor, selecione um arquivo para upload.");
+      return;
+    }
+  
+    if (!file.name.endsWith(".wav")) {
+      setMessage("Somente arquivos .wav são permitidos.");
       return;
     }
 
@@ -29,12 +35,14 @@ export default function UploadPage() {
       return;
     }
 
+    setLoading(true); // Ativa o estado de carregamento
+
     try {
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("user_id", user.uid);
 
-      const userId = user.uid;
-      const apiUrl = `http://localhost:8000/process_audio/?user_id=${userId}`;
+      const apiUrl = `https://audio-cleaner-b6b4b5ad8f62.herokuapp.com/process_audio/`;
 
       const response = await axios.post(apiUrl, formData, {
         headers: {
@@ -50,6 +58,8 @@ export default function UploadPage() {
     } catch (error) {
       console.error("Error details:", error);
       setMessage("Erro ao processar e fazer upload: " + (error.response?.data?.message || error.message));
+    } finally {
+      setLoading(false); // Desativa o estado de carregamento
     }
   };
 
@@ -57,8 +67,20 @@ export default function UploadPage() {
     <div className="container">
       <h1 className="title">Upload de Arquivos</h1>
       <input type="file" onChange={handleFileChange} className="input-file" />
-      <button onClick={handleUpload} className="button">Fazer Upload</button>
-      <button onClick={() => window.location.href = "/download"} className="button">Audios Processados</button>
+      <button onClick={handleUpload} className="button" disabled={loading}>
+        {loading ? "Processando..." : "Fazer Upload"}
+      </button>
+      <button onClick={() => window.location.href = "/download"} className="button" disabled={loading}>
+        Audios Processados
+      </button>
+      <button onClick={() => window.location.href = "/dashboard"} className="button" disabled={loading}>
+        Dashboard
+      </button>
+      {loading && (
+        <div className="loading">
+          <img src="/loading.gif" alt="Carregando..." className="loading-gif" />
+        </div>
+      )}
       {message && <p className="message">{message}</p>}
     </div>
   );
